@@ -19,7 +19,7 @@ const Personal = () => {
     const [user, setUser] = useState<User[]>([]);
     const [selectedUser, setSelectedUser] = useState<User | null>(null);
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const url = "http://localhost:4000/api/v1/";
+    const url = "https://biblioteca-ingenieria.onrender.com/api/v1/";
 
     useEffect(() => {
         fetchData();
