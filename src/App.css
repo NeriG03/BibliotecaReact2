@@ -1,0 +1,16 @@
+/* App.css */
+html, body, #root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+.background {
+  background-image: url('https://r4.wallpaperflare.com/wallpaper/839/50/541/library-cartoon-books-candles-wallpaper-19b0d8bdc1dabd4b96d7c8df60e1960d.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center; */
+}
