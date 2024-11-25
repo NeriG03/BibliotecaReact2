@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Personal from "./components/Personal";
 import Lectura from "./components/Lectura";
+import Cliente from "./components/Cliente";
 import "./App.css";
 
 const App = () => {
@@ -22,9 +23,16 @@ const App = () => {
         >
           LECTURA
         </button>
+        <button
+          className="bg-purple-500 text-white px-4 py-2 rounded"
+          onClick={() => setComponent("Cliente")}
+        >
+          CLIENTE
+        </button>
       </div>
       {component === "Personal" && <Personal />}
       {component === "Lectura" && <Lectura />}
+      {component === "Cliente" && <Cliente />}
       </div>
     </>
   );
