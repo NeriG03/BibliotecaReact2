@@ -1,8 +1,10 @@
 import axios from "axios";
 
-function getAllPersonal(url: string) {
-    return axios.get(url + "personal");
-}
+const URL = "https://biblioteca-ingenieria.onrender.com/api/v1";
+
+const getAllPersonal = async () => {
+    return await axios.get(`${URL}/personal`);
+};
 
 function getPersonalById(url: string, id: number) {
     return axios.get(url + "personal/" + id);
