@@ -43,10 +43,6 @@ interface ReservacionFormProps {
     onCancel: () => void;
 }
 
-
-
-
-
 const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas, clientes, onSave, onCancel }) => {
     const [formData, setFormData] = useState<Reservacion>({
         id: reservacion?.id || undefined,
@@ -58,14 +54,16 @@ const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas
         RecepcionistaId: reservacion?.RecepcionistaId || 0,
     });
 
-    const [recepcionistasList, setRecepcionistasList] = useState<Personal[]>([]);
+    const [recepcionistasList, setRecepcionistasList] = useState<{ id: number, PersonalId: number }[]>([]);
+    const [personalList, setPersonalList] = useState<Personal[]>([]);
 
     useEffect(() => {
         getAllRecepcionista().then(response => {
+            setRecepcionistasList(response.data);
             const recepcionistaPersonalIds = response.data.map((r: { PersonalId: number }) => r.PersonalId);
             getAllPersonal().then(personalResponse => {
                 const filteredPersonal = personalResponse.data.filter((p: Personal) => recepcionistaPersonalIds.includes(p.id));
-                setRecepcionistasList(filteredPersonal);
+                setPersonalList(filteredPersonal);
             });
         });
     }, []);
@@ -169,7 +167,7 @@ const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas
                     <option value="">Seleccione un recepcionista</option>
                     {recepcionistasList.map(recepcionista => (
                         <option key={recepcionista.id} value={recepcionista.id}>
-                            {recepcionista.nombre}
+                            {personalList.find(p => p.id === recepcionista.PersonalId)?.nombre}
                         </option>
                     ))}
                 </select>

@@ -24,7 +24,16 @@ const createReservacion = async (URL: string, reservacion: any) => {
 };
 
 const updateReservacion = async (URL: string, id: number, reservacion: any) => {
-    return await axios.put(`${URL}reservacion/${id}`, reservacion);
+    try {
+        console.log('Sending request to update reservacion:', reservacion); // Log the request data
+        const response = await axios.put(`${URL}reservacion/${id}`, reservacion);
+        console.log('Response from server:', response.data); // Log the response data
+        return response;
+    } catch (error) {
+        console.error('Error updating reservacion:', error);
+        console.error('Request data:', reservacion);
+        throw error;
+    }
 };
 
 const deleteReservacion = async (URL: string, id: number) => {

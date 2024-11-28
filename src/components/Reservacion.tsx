@@ -45,16 +45,23 @@ const Reservacion = () => {
     const url = "https://biblioteca-ingenieria.onrender.com/api/v1/";
 
     useEffect(() => {
-        getAllReservaciones(url).then(response => setReservaciones(response.data));
-        getAllLectura(url).then(response => setLecturas(response.data));
-        getAllCliente(url).then(response => setClientes(response.data));
-        getAllRecepcionista().then(response => {
-            const recepcionistaPersonalIds = response.data.map((r: { PersonalId: number }) => r.PersonalId);
-            getAllPersonal().then(personalResponse => {
-                const filteredPersonal = personalResponse.data.filter((p: Personal) => recepcionistaPersonalIds.includes(p.id));
-                setRecepcionistas(filteredPersonal);
-            });
-        });
+        const fetchData = async () => {
+            const reservacionesResponse = await getAllReservaciones(url);
+            const lecturasResponse = await getAllLectura(url);
+            const clientesResponse = await getAllCliente(url);
+            const recepcionistasResponse = await getAllRecepcionista();
+            const personalResponse = await getAllPersonal();
+
+            const recepcionistaPersonalIds = recepcionistasResponse.data.map((r: { PersonalId: number }) => r.PersonalId);
+            const filteredPersonal = personalResponse.data.filter((p: Personal) => recepcionistaPersonalIds.includes(p.id));
+
+            setReservaciones(reservacionesResponse.data);
+            setLecturas(lecturasResponse.data);
+            setClientes(clientesResponse.data);
+            setRecepcionistas(filteredPersonal);
+        };
+
+        fetchData();
     }, []);
 
     const handleAddReservacion = () => {
@@ -113,7 +120,6 @@ const Reservacion = () => {
                         <th className='py-2 px-4 border-b'>Estado</th>
                         <th className='py-2 px-4 border-b'>Lectura</th>
                         <th className='py-2 px-4 border-b'>Cliente</th>
-                        <th className='py-2 px-4 border-b'>Recepcionista</th>
                         <th className='py-2 px-4 border-b rounded-r-lg'>Acciones</th>
                     </tr>
                 </thead>
@@ -125,7 +131,6 @@ const Reservacion = () => {
                             <td className='text-center py-2 px-4 border-b'>{item.estado ? 'Activo' : 'Inactivo'}</td>
                             <td className='text-center py-2 px-4 border-b'>{lecturas.find(l => l.id === item.DatosLecturaId)?.nombre}</td>
                             <td className='text-center py-2 px-4 border-b'>{clientes.find(c => c.id === item.ClienteId)?.nombre}</td>
-                            <td className='text-center py-2 px-4 border-b'>{recepcionistas.find(r => r.id === item.RecepcionistaId)?.nombre}</td>
                             <td className='text-center py-2 px-4 border-b'>
                                 <button
                                     onClick={() => handleEditReservacion(item)}
