@@ -6,6 +6,7 @@ import { getAllRecepcionista } from '../api/httpRecepcionista';
 import { getAllPersonal } from '../api/httpPersonal';
 import Modal from './Modal';
 import ReservacionForm from './ReservacionForm';
+import { createMulta } from '../api/httpMulta'; // Import the createMulta function
 
 interface Reservacion {
     id?: number;
@@ -14,7 +15,7 @@ interface Reservacion {
     estado: boolean;
     DatosLecturaId: number;
     ClienteId: number;
-    RecepcionistaId: number;
+    RecepcionistumId: number;
 }
 
 interface Lectura {
@@ -42,6 +43,9 @@ const Reservacion = () => {
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
     const [reservacionToDelete, setReservacionToDelete] = useState<Reservacion | null>(null);
+    const [isMultaFormOpen, setIsMultaFormOpen] = useState(false);
+    const [selectedReservacionId, setSelectedReservacionId] = useState<number | null>(null);
+    const [multaData, setMultaData] = useState({ diasRetraso: '', monto: '' });
     const url = "https://biblioteca-ingenieria.onrender.com/api/v1/";
 
     useEffect(() => {
@@ -107,6 +111,39 @@ const Reservacion = () => {
         }
     };
 
+    const handleMultaReservacion = (reservacionId: number) => {
+        setSelectedReservacionId(reservacionId);
+        setIsMultaFormOpen(true);
+    };
+
+    const handleMultaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        setMultaData({
+            ...multaData,
+            [name]: value,
+        });
+    };
+
+    const handleMultaSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (selectedReservacionId && multaData.diasRetraso && multaData.monto) {
+            const multaPayload = {
+                ReservacionId: selectedReservacionId,
+                diasRetraso: parseInt(multaData.diasRetraso, 10),
+                monto: parseFloat(multaData.monto),
+            };
+            createMulta(multaPayload).then(() => {
+                setIsMultaFormOpen(false);
+                setMultaData({ diasRetraso: '', monto: '' });
+                setSelectedReservacionId(null);
+            }).catch(error => {
+                console.error('Error creating multa:', error);
+            });
+        } else {
+            alert('Please fill in all required fields.');
+        }
+    };
+
     return (
         <div>
             <button onClick={handleAddReservacion} className="bg-blue-500 text-white py-2 px-4 rounded">
@@ -144,6 +181,12 @@ const Reservacion = () => {
                                 >
                                     Eliminar
                                 </button>
+                                <button
+                                    onClick={() => handleMultaReservacion(item.id!)}
+                                    className='bg-purple-500 text-white py-1 px-3 rounded'
+                                >
+                                    Multa
+                                </button>
                             </td>
                         </tr>
                     ))}
@@ -179,6 +222,43 @@ const Reservacion = () => {
                         Eliminar
                     </button>
                 </div>
+            </Modal>
+
+            <Modal
+                title="Agregar Multa"
+                isOpen={isMultaFormOpen}
+                onClose={() => setIsMultaFormOpen(false)}
+            >
+                <form onSubmit={handleMultaSubmit} className="bg-white p-4 rounded shadow-md">
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Días de Retraso</label>
+                        <input
+                            type="number"
+                            name="diasRetraso"
+                            value={multaData.diasRetraso}
+                            onChange={handleMultaChange}
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="mb-4">
+                        <label className="block text-gray-700">Monto</label>
+                        <input
+                            type="number"
+                            name="monto"
+                            value={multaData.monto}
+                            onChange={handleMultaChange}
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
+                    </div>
+                    <div className="flex justify-end">
+                        <button type="button" onClick={() => setIsMultaFormOpen(false)} className="bg-gray-500 text-white py-2 px-4 rounded mr-2">
+                            Cancelar
+                        </button>
+                        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded">
+                            Guardar
+                        </button>
+                    </div>
+                </form>
             </Modal>
         </div>
     );

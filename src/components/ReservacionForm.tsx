@@ -9,7 +9,7 @@ interface Reservacion {
     estado: boolean;
     DatosLecturaId: number;
     ClienteId: number;
-    RecepcionistaId: number;
+    RecepcionistumId: number;
 }
 
 interface Lectura {
@@ -51,7 +51,7 @@ const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas
         estado: reservacion?.estado || false,
         DatosLecturaId: reservacion?.DatosLecturaId || 0,
         ClienteId: reservacion?.ClienteId || 0,
-        RecepcionistaId: reservacion?.RecepcionistaId || 0,
+        RecepcionistumId: reservacion?.RecepcionistumId || 0,
     });
 
     const [recepcionistasList, setRecepcionistasList] = useState<{ id: number, PersonalId: number }[]>([]);
@@ -78,12 +78,12 @@ const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (formData.fecha_inicio && formData.fecha_fin && formData.DatosLecturaId && formData.ClienteId && formData.RecepcionistaId) {
+        if (formData.fecha_inicio && formData.fecha_fin && formData.DatosLecturaId && formData.ClienteId && formData.RecepcionistumId) {
             const formattedData = {
                 ...formData,
                 DatosLecturaId: parseInt(formData.DatosLecturaId.toString(), 10),
                 ClienteId: parseInt(formData.ClienteId.toString(), 10),
-                RecepcionistaId: parseInt(formData.RecepcionistaId.toString(), 10),
+                RecepcionistumId: parseInt(formData.RecepcionistumId.toString(), 10),
             };
             console.log('Formatted data:', formattedData); // Log the formatted data
             onSave(formattedData);
@@ -159,8 +159,8 @@ const ReservacionForm: React.FC<ReservacionFormProps> = ({ reservacion, lecturas
             <div className="mb-4">
                 <label className="block text-gray-700">Recepcionista</label>
                 <select
-                    name="RecepcionistaId"
-                    value={formData.RecepcionistaId}
+                    name="RecepcionistumId"
+                    value={formData.RecepcionistumId}
                     onChange={handleChange}
                     className="w-full p-2 border border-gray-300 rounded"
                 >
