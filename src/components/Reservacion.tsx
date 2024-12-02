@@ -127,6 +127,10 @@ const Reservacion = () => {
     const handleMultaSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (selectedReservacionId && multaData.diasRetraso && multaData.monto) {
+            if (parseInt(multaData.diasRetraso, 10) < 0 || parseFloat(multaData.monto) < 0) {
+                alert('Días de retraso y monto no pueden ser negativos.');
+                return;
+            }
             const multaPayload = {
                 ReservacionId: selectedReservacionId,
                 diasRetraso: parseInt(multaData.diasRetraso, 10),
